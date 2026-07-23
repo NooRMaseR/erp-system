@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:18.3
+    container_name: erp_db
+    restart: always
+    volumes:
+      - erp-db-data:/var/lib/postgresql/
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    env_file:
+      - backend/.env
+
+  redis:
+    image: redis:8-alpine
+    container_name: erp_redis
+    restart: always
+    expose:
+      - 6379
+    ports:
+      - 6379:6379
+    
+volumes:
+  erp-db-data:
