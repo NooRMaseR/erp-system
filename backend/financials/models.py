@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.db import models
-from core.models import ERPUser
 from django.utils import timezone
+from crm.models import ClientProfile
 from django.core.exceptions import ValidationError
 
 class InvoiceStatus(models.TextChoices):
@@ -13,7 +13,7 @@ class InvoiceStatus(models.TextChoices):
 class Invoice(models.Model):
     """Acts as the firm billings registry or client service log."""
     client_user = models.ForeignKey(
-        ERPUser, 
+        ClientProfile, 
         on_delete=models.PROTECT, 
         related_name="client_invoices"
     )
@@ -27,6 +27,11 @@ class Invoice(models.Model):
     
     # ETA Integration reference tokens (for Phase 4 e-Invoice submissions)
     eta_uuid = models.CharField(max_length=100, blank=True, null=True, unique=True)
+    
+    @property
+    def total_amount(self) -> float:
+        "you **MUST** use `prefetch_related('items')` before calling this property"
+        return sum((item.quantity * item.unit_price) * (1 * item.vat_rate) for item in self.items.all()) # type: ignore
     
     def clean(self) -> None:
         """Enforces strict accounting rules before saving."""

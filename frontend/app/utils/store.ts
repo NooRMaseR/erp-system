@@ -1,15 +1,37 @@
 import { create } from "zustand";
+import { components } from "../generated/schema";
 
-type UserSessionStore = {
+type User = {
     email: string | null;
     username: string | null;
-    login: (email: string, username: string) => void;
+    role: components['schemas']['ERPUserRole'];
+};
+
+type UserSessionStore = {
+    user: User | null,
+    login: (user: User) => void;
+}
+
+type InvoiceToEdit = {
+    invoiceNumber: string | null;
+    setData: (invoiceNumber: string) => void;
+    clean: () => void;
 }
 
 export const useAuthState = create<UserSessionStore>((set) => ({
-    email: null,
-    username: null,
-    login(email, username) {
-        set({ email, username });
+    user: null,
+    login(user) {
+        set({ user });
     }
 }));
+
+export const useEditInvoiceState = create<InvoiceToEdit>((set) => ({
+    invoiceNumber: null,
+    info: null,
+    setData(invoiceNumber) {
+        set({ invoiceNumber });
+    },
+    clean() {
+        set({ invoiceNumber: null });
+    }
+}))

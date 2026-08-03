@@ -47,7 +47,6 @@ INSTALLED_APPS = (
     "django_bolt",
     "phonenumber_field",
     'core',
-    'payroll',
     'financials',
     'crm',
     'hr'
@@ -68,7 +67,7 @@ ROOT_URLCONF = 'erp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,6 +102,30 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://redis:6379/1",
+    }
+}
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        'require_debug': {
+            "()": "django.utils.log.RequireDebugTrue"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "filters": ['require_debug'],
+            "class": "logging.StreamHandler"
+        }
+    },
+    "loggers": {
+        "django.db.backends": {
+            "level": 'DEBUG',
+            "handlers": ['console']
+        }
     }
 }
 
@@ -144,12 +167,14 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "static_files"
 
+# Security Settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
+# Unfold Settings
 UNFOLD = {
     "SITE_TITLE": "AccountFlow Pro Admin Engine",
     "SITE_HEADER": "AccountFlow Pro Portal",

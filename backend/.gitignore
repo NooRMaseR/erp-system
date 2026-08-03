@@ -11,4 +11,6 @@ wheels/
 .env
 
 # others
-static_files
+static_files/
+test.py
+test.rest

@@ -1,3 +1,4 @@
-from datetime import datetime
+import re
 
-print(f"INV-{datetime.now().year}-{20000:04d}")
+value = "PAY-2026-06"
+print(re.match(r"^PAY\-\d{4}\-\d{2}$", value))

@@ -1,10 +1,10 @@
 from django.db import models
-from django.conf import settings
+from core.models import ERPUser
 
 class ClientProfile(models.Model):
     """Extends basic user login entities to carry business profile records."""
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
+        ERPUser,
         on_delete=models.CASCADE,
         related_name="crm_profile"
     )
@@ -14,6 +14,7 @@ class ClientProfile(models.Model):
     tax_registration_number = models.CharField(max_length=9, unique=True)
     commercial_register_id = models.CharField(max_length=50, blank=True, null=True)
     company_address = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return self.company_name

@@ -62,11 +62,11 @@ class ERPUser(AbstractBaseUser, PermissionsMixin):
 
 class AuditTrail(models.Model):
     """Logs every critical business action for regulatory compliance."""
-    user = models.ForeignKey(ERPUser, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(ERPUser, on_delete=models.PROTECT)
     action = models.CharField(max_length=255)  # e.g., "Created Invoice", "Approved Leave"
     module = models.CharField(max_length=100) # e.g., "Financials", "HR"
     row_id = models.PositiveIntegerField(null=True)
-    changes = models.JSONField(blank=True, null=True) # Captures before/after snapshot
+    changes = models.JSONField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:

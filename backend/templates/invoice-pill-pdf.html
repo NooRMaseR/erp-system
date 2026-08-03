@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>فاتورة ضريبية</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #0f766e;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        #title {
+            width: fit-content;
+            color: #0f766e;
+            font-weight: bold;
+        }
+        .invoice-details {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .invoice-details td {
+            padding: 5px;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .items-table th, .items-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+        .items-table th {
+            background-color: #f8fafc;
+            color: #0f766e;
+        }
+        .totals {
+            width: 50%;
+            float: right;
+            border-collapse: collapse;
+        }
+        .totals td {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .grand-total {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #0f766e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p id="title">Account Flow</p>
+        <h1>فاتورة ضريبية (Tax Invoice)</h1>
+        <p>رقم الفاتورة: {{ invoice_number }}</p>
+    </div>
+
+    <table class="invoice-details">
+        <tr>
+            <td><strong>صدرت إلى:</strong><br>{{ client_name }}</td>
+            <td><strong>تاريخ الإصدار:</strong><br>{{ issue_date }}</td>
+        </tr>
+    </table>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>الوصف</th>
+                <th>الكمية</th>
+                <th>سعر الوحدة</th>
+                <th>الإجمالي</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.description }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.unit_price }} ج.م</td>
+                <td>{{ item.total }} ج.م</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="totals">
+        <tr>
+            <td>المجموع الفرعي:</td>
+            <td>{{ subtotal }} ج.م</td>
+        </tr>
+        <tr>
+            <td>ضريبة القيمة المضافة:</td>
+            <td>{{ vat_total }} ج.م</td>
+        </tr>
+        <tr class="grand-total">
+            <td>الإجمالي الكلي:</td>
+            <td>{{ grand_total }} ج.م</td>
+        </tr>
+    </table>
+</body>
+</html>

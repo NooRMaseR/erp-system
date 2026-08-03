@@ -20,6 +20,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/test-auth/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_test_auth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/refresh-token/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_refresh_token"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/dashboard/": {
         parameters: {
             query?: never;
@@ -27,7 +59,24 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_dashboard_api"];
+        /** جلب إحصائيات لوحة القيادة. */
+        get: operations["get_get_dashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit-logs/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_list_audit_logs_api"];
         put?: never;
         post?: never;
         delete?: never;
@@ -52,6 +101,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ledger/payrolls/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** جلب مسيرات الرواتب (Payroll Periods) وحساب إجمالياتها ديناميكياً. */
+        get: operations["get_list_ledger_payrolls_api"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ledger/payrolls/{payroll_id}/approve/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * اعتماد صرف مسير الرواتب وتحديث حالته.
+         * @description payroll_id متوقع بصيغة: PAY-YYYY-MM (مثال: PAY-2026-07)
+         */
+        post: operations["post_approve_payroll_api"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ledger/{invoice_number}/status/": {
         parameters: {
             query?: never;
@@ -68,6 +154,22 @@ export interface paths {
         patch: operations["patch_update_invoice_status"];
         trace?: never;
     };
+    "/ledger/{invoice_number}/bands/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_get_invoice_lines"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ledger/{invoice_number}/edit/": {
         parameters: {
             query?: never;
@@ -76,7 +178,7 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Completely overwrites the invoice details and line items safely. */
+        /** Completely overwrites the invoice details and line items safely, with Audit Trail. */
         put: operations["put_edit_invoice_api"];
         post?: never;
         delete?: never;
@@ -102,14 +204,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/crm/": {
+    "/crm/clients/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["get_crm_api"];
+        /** Fetches the list of corporate retainers */
+        get: operations["get_get_crm_clients_api"];
         put?: never;
         post?: never;
         delete?: never;
@@ -125,7 +228,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lightweight endpoint to populate dropdowns in the frontend. */
+        /** Lightweight endpoint to populate dropdowns in the frontend for clients. */
         get: operations["get_client_lookup_api"];
         put?: never;
         post?: never;
@@ -135,14 +238,119 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/hr/": {
+    "/crm/clients/create/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["get_hr_api"];
+        get?: never;
+        put?: never;
+        /** create a new client with commercial register (require admin permissions) */
+        post: operations["post_create_client"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/client/invoices/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_list_client_invoices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/client/invoices/{invoice_id}/pdf/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** توليد وتحميل ملف الـ PDF الخاص بالفاتورة. */
+        get: operations["get_download_invoice_pdf_api"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/dashboard/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Fetches HR metrics and employee list with today's attendance status. */
+        get: operations["get_get_hr_dashboard_api"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/employees/create/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** إنشاء حساب موظف وملفه الوظيفي في خطوة واحدة. */
+        post: operations["post_create_employee_api"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/payroll/process/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Processes payroll. */
+        post: operations["post_process_payroll_api"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/departments/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * نقطة اتصال سريعة لجلب قائمة الأقسام.
+         * @description تستخدم لملء القوائم المنسدلة (Dropdowns) في واجهات النظام.
+         */
+        get: operations["get_list_departments_api"];
         put?: never;
         post?: never;
         delete?: never;
@@ -173,14 +381,44 @@ export interface components {
              */
             email: string;
             username: string;
-            token: string;
+            tokens: components["schemas"]["TokensResponse"];
+            role: components["schemas"]["ERPUserRole"];
         };
-        /** DashboardResponse */
-        DashboardResponse: {
-            totalRevenue: string;
-            growth: string;
+        /** TokensResponse */
+        TokensResponse: {
+            access_token: string;
+            refresh_token: string;
+        };
+        /**
+         * ERPUserRole
+         * @enum {string}
+         */
+        ERPUserRole: "SUPER_ADMIN" | "MANAGER" | "EMPLOYEE" | "CLIENT";
+        /** DashboardStatsSerializer */
+        DashboardStatsSerializer: {
+            totalRevenue: number;
+            pendingReceivables: number;
+            totalPayroll: number;
             activeClients: number;
-            pendingInvoices: number;
+            chartData: components["schemas"]["ChartDataSerializer"][];
+        };
+        /** ChartDataSerializer */
+        ChartDataSerializer: {
+            month: string;
+            revenue: number;
+            payroll: number;
+        };
+        /** AuditLogSerializer */
+        AuditLogSerializer: {
+            id: number;
+            username: string;
+            email: string;
+            action: string;
+            module: string;
+            date: string;
+            changes: {
+                [key: string]: unknown;
+            };
         };
         /** LedgerItem */
         LedgerItem: {
@@ -188,19 +426,32 @@ export interface components {
             client: string;
             date: string;
             amount: string;
-            status: string;
+            status: components["schemas"]["InvoiceStatus"];
             eta: string;
             is_locked: boolean;
-        };
-        /** StatusUpdatePayload */
-        StatusUpdatePayload: {
-            status: components["schemas"]["InvoiceStatus"];
         };
         /**
          * InvoiceStatus
          * @enum {string}
          */
         InvoiceStatus: "DRAFT" | "SENT" | "PAID" | "CANCELLED";
+        /** PayrollLedgerSerializer */
+        PayrollLedgerSerializer: {
+            id: string;
+            month: string;
+            employeesCount: number;
+            totalNetSalaries: number;
+            status: components["schemas"]["PayrollStatus"];
+        };
+        /**
+         * PayrollStatus
+         * @enum {string}
+         */
+        PayrollStatus: "PAID" | "PENDING";
+        /** StatusUpdatePayload */
+        StatusUpdatePayload: {
+            status: components["schemas"]["InvoiceStatus"];
+        };
         /** InvoiceEditPayload */
         InvoiceEditPayload: {
             /** @default null */
@@ -219,7 +470,7 @@ export interface components {
         };
         /** InvoiceCreatePayload */
         InvoiceCreatePayload: {
-            clientId: string;
+            clientId: number;
             /** Format: date */
             dueDate: string;
             items: components["schemas"]["InvoiceItemCreate"][];
@@ -236,28 +487,140 @@ export interface components {
             id: string;
             message: string;
         };
-        /** CRMItem */
-        CRMItem: {
+        /** CrmClientResponse */
+        CrmClientResponse: {
+            /** @description Positive integer (> 0) */
             id: number;
-            name: string;
-            taxId: string;
-            contract: string;
-            value: string;
-            status: string;
+            companyName: string;
+            taxRegistration: string;
+            /**
+             * @description Valid email address
+             * @example user@example.com
+             */
+            contactEmail: string;
+            phone: string;
+            status: components["schemas"]["ClientStatus"];
+            daysActive: number;
+            registeredDate: string;
         };
+        /**
+         * ClientStatus
+         * @enum {string}
+         */
+        ClientStatus: "ACTIVE" | "INACTIVE";
         /** ClientLookupOption */
         ClientLookupOption: {
+            /** @description Positive integer (> 0) */
             id: number;
             name: string;
         };
-        /** HRItem */
-        HRItem: {
-            id: string;
+        /** CreateClientRequest */
+        CreateClientRequest: {
+            companyName: string;
+            taxRegistration: number;
+            commercialRegister: string;
+            companyAddress: string;
+            /**
+             * @description Valid email address
+             * @example user@example.com
+             */
+            contactEmail: string;
+            /**
+             * @description Phone number (E.164 format)
+             * @example +14155551234
+             * @example 14155551234
+             */
+            phone: string;
+            password: string;
+        };
+        /** CreateClientResponse */
+        CreateClientResponse: {
+            message: string;
+            /** @description Positive integer (> 0) */
+            clientId: number;
+            /** @description Positive integer (> 0) */
+            userId: number;
+        };
+        /** ClientInvoiceResponse */
+        ClientInvoiceResponse: {
+            id: number;
+            invoice_number: string;
+            date: string;
+            amount: number;
+            status: components["schemas"]["InvoiceStatus"];
+        };
+        /** HRDashboardResponse */
+        HRDashboardResponse: {
+            totalEmployees: number;
+            presentToday: number;
+            onLeave: number;
+            absentToday: number;
+            employees: components["schemas"]["EmployeeHROption"][];
+        };
+        /** EmployeeHROption */
+        EmployeeHROption: {
+            id: number;
+            fullName: string;
+            /**
+             * @description Valid email address
+             * @example user@example.com
+             */
+            email: string;
+            position: string;
+            department: string;
+            nationalId: string;
+            todayStatus: components["schemas"]["AttendanceStatus"];
+            clockIn: string | null;
+        };
+        /**
+         * AttendanceStatus
+         * @enum {string}
+         */
+        AttendanceStatus: "PRESENT" | "ABSENT" | "LATE" | "LEAVE";
+        /** CreateEmployeeRequest */
+        CreateEmployeeRequest: {
+            fullName: string;
+            nationalId: number;
+            departmentId: number;
+            position: string;
+            baseSalary: number;
+            /** Format: date */
+            hireDate: string;
+            /**
+             * @description Valid email address
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description Phone number (E.164 format)
+             * @example +14155551234
+             * @example 14155551234
+             */
+            phone: string;
+            /** @description Password (8-128 chars) */
+            password: string;
+        };
+        /** CreateEmployeeResponse */
+        CreateEmployeeResponse: {
+            message: string;
+            employeeId: string;
+        };
+        /** ProcessPayrollRequest */
+        ProcessPayrollRequest: {
+            month: number;
+            year: number;
+        };
+        /** ProcessPayrollResponse */
+        ProcessPayrollResponse: {
+            message: string;
+            processedCount: number;
+            totalNetSalary: number;
+        };
+        /** DepartmentSerializer */
+        DepartmentSerializer: {
+            id: number;
             name: string;
-            role: string;
-            dept: string;
-            salary: string;
-            status: string;
+            code: string;
         };
     };
     responses: never;
@@ -326,7 +689,7 @@ export interface operations {
             };
         };
     };
-    get_dashboard_api: {
+    get_test_auth: {
         parameters: {
             query?: never;
             header?: never;
@@ -341,7 +704,72 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DashboardResponse"];
+                    "application/json": components["schemas"]["LoginResponse"];
+                };
+            };
+        };
+    };
+    get_refresh_token: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokensResponse"];
+                };
+            };
+        };
+    };
+    get_get_dashboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardStatsSerializer"];
+                };
+            };
+        };
+    };
+    get_list_audit_logs_api: {
+        parameters: {
+            query?: {
+                /** @description Parameter user */
+                user?: string;
+                /** @description Parameter module */
+                module?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditLogSerializer"][];
                 };
             };
         };
@@ -369,6 +797,49 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LedgerItem"][];
+                };
+            };
+        };
+    };
+    get_list_ledger_payrolls_api: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayrollLedgerSerializer"][];
+                };
+            };
+        };
+    };
+    post_approve_payroll_api: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Parameter payroll_id */
+                payroll_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -430,6 +901,29 @@ export interface operations {
                             input?: unknown;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    get_get_invoice_lines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Parameter invoice_number */
+                invoice_number: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceEditPayload"];
                 };
             };
         };
@@ -553,9 +1047,12 @@ export interface operations {
             };
         };
     };
-    get_crm_api: {
+    get_get_crm_clients_api: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Parameter company */
+                company?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -568,7 +1065,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CRMItem"][];
+                    "application/json": components["schemas"]["CrmClientResponse"][];
                 };
             };
         };
@@ -593,7 +1090,65 @@ export interface operations {
             };
         };
     };
-    get_hr_api: {
+    post_create_client: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Request body for payload */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateClientRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateClientResponse"];
+                };
+            };
+            /** @description Validation Error - Request data failed validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description List of validation errors */
+                        detail: {
+                            /**
+                             * @description Error type
+                             * @example validation_error
+                             */
+                            type: string;
+                            /**
+                             * @description Location of the error (field path)
+                             * @example [
+                             *       "body",
+                             *       "is_active"
+                             *     ]
+                             */
+                            loc: (string | number)[];
+                            /**
+                             * @description Error message
+                             * @example Expected `bool`, got `int`
+                             */
+                            msg: string;
+                            /** @description The input value that caused the error (optional) */
+                            input?: unknown;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    get_list_client_invoices: {
         parameters: {
             query?: never;
             header?: never;
@@ -608,7 +1163,189 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HRItem"][];
+                    "application/json": components["schemas"]["ClientInvoiceResponse"][];
+                };
+            };
+        };
+    };
+    get_download_invoice_pdf_api: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Parameter invoice_id */
+                invoice_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    get_get_hr_dashboard_api: {
+        parameters: {
+            query?: {
+                /** @description Parameter user */
+                user?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HRDashboardResponse"];
+                };
+            };
+        };
+    };
+    post_create_employee_api: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Request body for payload */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateEmployeeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateEmployeeResponse"];
+                };
+            };
+            /** @description Validation Error - Request data failed validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description List of validation errors */
+                        detail: {
+                            /**
+                             * @description Error type
+                             * @example validation_error
+                             */
+                            type: string;
+                            /**
+                             * @description Location of the error (field path)
+                             * @example [
+                             *       "body",
+                             *       "is_active"
+                             *     ]
+                             */
+                            loc: (string | number)[];
+                            /**
+                             * @description Error message
+                             * @example Expected `bool`, got `int`
+                             */
+                            msg: string;
+                            /** @description The input value that caused the error (optional) */
+                            input?: unknown;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    post_process_payroll_api: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Request body for payload */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProcessPayrollRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProcessPayrollResponse"];
+                };
+            };
+            /** @description Validation Error - Request data failed validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description List of validation errors */
+                        detail: {
+                            /**
+                             * @description Error type
+                             * @example validation_error
+                             */
+                            type: string;
+                            /**
+                             * @description Location of the error (field path)
+                             * @example [
+                             *       "body",
+                             *       "is_active"
+                             *     ]
+                             */
+                            loc: (string | number)[];
+                            /**
+                             * @description Error message
+                             * @example Expected `bool`, got `int`
+                             */
+                            msg: string;
+                            /** @description The input value that caused the error (optional) */
+                            input?: unknown;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    get_list_departments_api: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentSerializer"][];
                 };
             };
         };

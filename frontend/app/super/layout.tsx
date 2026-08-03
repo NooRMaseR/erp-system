@@ -8,16 +8,12 @@ export default function Layout({
     children: React.ReactNode;
 }>) {
     return (
-        <html
-            lang="en"
-            // className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-            className={'h-full antialiased'}
-        >
-            <body className="min-h-full w-full flex flex-row">
-                <AsideNav />
+        <>
+            <AsideNav />
+            <main className="flex-1 w-full flex flex-col min-w-0">
                 {children}
-                <Toaster position="bottom-right" />
-            </body>
-        </html>
+            </main>
+            <Toaster position="bottom-right" />
+        </>
     );
 }

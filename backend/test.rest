@@ -1,3 +1,20 @@
-GET http://localhost:8000/dashboard/ HTTP/1.1
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzNiIsImV4cCI6MTc4NTE2OTI4NywiaWF0IjoxNzg1MTY1Njg3LCJpc19zdGFmZiI6ZmFsc2UsImlzX3N1cGVydXNlciI6ZmFsc2UsInVzZXJuYW1lIjoiUHJvZ3JhbW1pbmcgQ29tcGFueSIsImVtYWlsIjoibm9vckBnbWFpbC5jb20iLCJyb2xlIjoiQ0xJRU5UIn0.jM94BZNGIm7mIU8CMOJl1hsbzXh_CO3lDqzY0XDEuSs
+@url = http://localhost:8000
+
+
+POST {{url}}/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "noor@gmail.com",
+    "password": "noor111213"
+}
 
 ###
+
+GET {{url}}/crm/client/invoices/ HTTP/1.1
+Authorization: {{token}}
+
+###
+
+GET {{url}}/dashboard/ HTTP/1.1

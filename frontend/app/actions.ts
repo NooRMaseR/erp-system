@@ -1,33 +1,54 @@
 "use server";
 
 import { components } from "./generated/schema";
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { API } from "./utils/api";
 
-export async function authenticateUser(loginData: components['schemas']['LoginRequest'], logFunc: (email: string, username: string) => void) {
-    const cookies_set = await cookies();
+type AuthResponse = {
+    success: boolean;
+    data?: components['schemas']['LoginResponse'];
+    error?: string;
+}
 
-    const { data, error } = await API.POST("/login/", {
-        body: loginData,
-    });
+export async function authenticateUser(loginData: components['schemas']['LoginRequest']): Promise<AuthResponse> {
+
+    const [cookies_set, { data, error }] = await Promise.all(
+        [
+            cookies(),
+            API.POST("/login/", {
+                body: loginData,
+            })
+        ]
+    );
 
     if (error || !data) {
-        return { error: "Invalid credentials. Please try again." };
+        return { error: "Invalid credentials. Please try again.", success: false };
     }
 
-    // Set the HTTP-Only cookie for extreme security
     cookies_set.set({
         name: "auth_token",
-        value: data.token,
+        value: data.tokens.access_token,
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 1, // 1 hours
+        maxAge: 3600,
     });
-    logFunc(data.email, data.username);
+    cookies_set.set({
+        name: "refresh_token",
+        value: data.tokens.refresh_token,
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 3600 * 24 * 7,
+    });
 
-    // Redirect to the Dashboard upon success
-    redirect("/super/dashboard");
+    return { success: true, data };
+}
+
+export const deleteAuthCookies = async () => {
+    const cookies_store = await cookies();
+    cookies_store.delete("auth_token");
+    cookies_store.delete("refresh_token");
 }

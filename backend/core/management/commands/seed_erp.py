@@ -1,14 +1,14 @@
 import random
 from decimal import Decimal
-from datetime import timedelta, date
 from django.utils import timezone
+from datetime import timedelta, date
 from django.core.management.base import BaseCommand
 
-from core.models import ERPUser, ERPUserRole, AuditTrail
-from hr.models import Department, EmployeeProfile, AttendanceLog, AttendanceStatus
-from financials.models import Invoice, InvoiceItem, InvoiceStatus
-from payroll.models import PayrollPeriod, Payslip
+from hr.models import PayrollPeriod, Payslip
 from crm.models import ClientProfile, CorporateContract
+from core.models import ERPUser, ERPUserRole, AuditTrail
+from financials.models import Invoice, InvoiceItem, InvoiceStatus
+from hr.models import Department, EmployeeProfile, AttendanceLog, AttendanceStatus
 
 
 class Command(BaseCommand):
@@ -98,7 +98,8 @@ class Command(BaseCommand):
         ]
         
         self.stdout.write("Generating B2B client corporate portfolio...")
-        clients = []
+        clients: list[ClientProfile] = []
+        contracts: list[CorporateContract] = []
         
         for idx, comp in enumerate(client_companies):
             uname = f"client_node_{idx}"
@@ -109,7 +110,7 @@ class Command(BaseCommand):
                 role=ERPUserRole.CLIENT,
             )
             
-            client_profile = ClientProfile.objects.create(
+            client_profile = ClientProfile(
                 user=user,
                 company_name=comp,
                 tax_registration_number=f"{random.randint(100000000, 999999999)}", # Authentic 9-digit registration formats
@@ -119,15 +120,20 @@ class Command(BaseCommand):
             clients.append(client_profile)
 
             # Assign an active operational retainer contract to each corporate client
-            CorporateContract.objects.create(
-                client=client_profile,
-                title=f"Annual Accounting & Tax Retainer - 2026",
-                start_date=date(2026, 1, 1),
-                end_date=date(2026, 12, 31),
-                total_value=Decimal(random.randint(60000, 240000)),
-                is_active=True
+            contracts.append(
+                CorporateContract(
+                    client=client_profile,
+                    title=f"Annual Accounting & Tax Retainer - 2026",
+                    start_date=date(2026, 1, 1),
+                    end_date=date(2026, 12, 31),
+                    total_value=Decimal(random.randint(60000, 240000)),
+                    is_active=True
+                )
             )
 
+        ClientProfile.objects.bulk_create(clients)
+        CorporateContract.objects.bulk_create(contracts)
+        
         # --- 4. GENERATE 90 DAYS OF HISTORICAL INVOICES & LEDGER ENTRIES ---
         self.stdout.write("Simulating 90-day time-series historical invoices...")
         today = timezone.now().date()
@@ -145,7 +151,7 @@ class Command(BaseCommand):
             target_client = random.choice(clients)
             
             inv = Invoice.objects.create(
-                client_user=target_client.user,
+                client_user=target_client,
                 invoice_number=f"INV-2026-{invoice_serial}",
                 due_date=invoice_date + timedelta(days=30),
                 status=random.choice([InvoiceStatus.PAID, InvoiceStatus.PAID, InvoiceStatus.SENT]), # Weight toward paid entries
@@ -230,7 +236,7 @@ class Command(BaseCommand):
         AuditTrail.objects.create(
             user=manager_user,
             action="Executed Global System Data Optimization Suite",
-            module="Core Architecture",
+            module="Core Architecture SEED",
             row_id=1,
             changes={"execution_status": "Complete"}
         )

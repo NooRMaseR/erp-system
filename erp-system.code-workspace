@@ -10,5 +10,8 @@
 			"path": "frontend"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"django-settings-vscode.projectRoot": "./backend",
+		"django-settings-vscode.settingsModule": "./backend/erp/"
+	}
 }

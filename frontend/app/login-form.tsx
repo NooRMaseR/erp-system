@@ -1,11 +1,12 @@
 'use client';
 
-import { useForm } from "react-hook-form";
-import { authenticateUser } from "./actions";
-import type { components } from "./generated/schema";
 import { AlertCircle, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import type { components } from "./generated/schema";
+import { authenticateUser } from "./actions";
 import { useAuthState } from "./utils/store";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 type LoginRequest = components['schemas']['LoginRequest'];
 
@@ -13,11 +14,24 @@ export default function LoginForm() {
   const { register, handleSubmit, formState: { isSubmitting } } = useForm<LoginRequest>();
   const [error, setError] = useState<string | null>(null);
   const login = useAuthState(state => state.login);
+  const router = useRouter();
 
   const submit = async (data: LoginRequest) => {
-    const res = await authenticateUser(data, login);
-    if (res.error) {
-      setError(res.error)
+    const res = await authenticateUser(data);
+    if (!res.success) {
+      setError(res.error!);
+      return;
+    };
+
+    login({ email: res.data!.email, username: res.data!.username, role: res.data!.role });
+
+    switch (res.data!.role) {
+      case "CLIENT":
+        router.replace("/client/invoices");
+        break;
+      default:
+        router.replace("/super/dashboard");
+        break;
     };
   }
 
@@ -37,6 +51,7 @@ export default function LoginForm() {
         <input
           type="email"
           inputMode="email"
+          autoComplete="email"
           required
           className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600/50 focus:border-teal-600 transition-all text-slate-900"
           placeholder="Enter your email"
@@ -51,6 +66,7 @@ export default function LoginForm() {
         </div>
         <input
           type="password"
+          autoComplete="current-password"
           required
           className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600/50 focus:border-teal-600 transition-all text-slate-900"
           placeholder="••••••••"
